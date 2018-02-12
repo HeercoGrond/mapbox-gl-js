@@ -5,7 +5,7 @@ import type StyleLayer from '../style/style_layer';
 import type Coordinate from '../geo/coordinate';
 import type CollisionIndex from '../symbol/collision_index';
 
-export const rendered = function(sourceCache: SourceCache,
+export function queryRenderedFeatures(sourceCache: SourceCache,
                             styleLayers: {[string]: StyleLayer},
                             queryGeometry: Array<Coordinate>,
                             params: { filter: FilterSpecification, layers: Array<string> },
@@ -32,9 +32,9 @@ export const rendered = function(sourceCache: SourceCache,
     }
 
     return mergeRenderedFeatureLayers(renderedFeatureLayers);
-};
+}
 
-export const source = function(sourceCache: SourceCache, params: any) {
+export function querySourceFeatures(sourceCache: SourceCache, params: any) {
     const tiles = sourceCache.getRenderableIds().map((id) => {
         return sourceCache.getTileByID(id);
     });
@@ -52,7 +52,7 @@ export const source = function(sourceCache: SourceCache, params: any) {
     }
 
     return result;
-};
+}
 
 function sortTilesIn(a, b) {
     const idA = a.tileID;
