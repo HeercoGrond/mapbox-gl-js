@@ -1,16 +1,12 @@
 // @flow
 
-const StyleLayer = require('../style_layer');
-const CircleBucket = require('../../data/bucket/circle_bucket');
-const {multiPolygonIntersectsBufferedMultiPoint} = require('../../util/intersection_tests');
-const {getMaximumPaintValue, translateDistance, translate} = require('../query_utils');
-const properties = require('./circle_style_layer_properties');
+import StyleLayer from '../style_layer';
 
-const {
-    Transitionable,
-    Transitioning,
-    PossiblyEvaluated
-} = require('../properties');
+import CircleBucket from '../../data/bucket/circle_bucket';
+import { multiPolygonIntersectsBufferedMultiPoint } from '../../util/intersection_tests';
+import { getMaximumPaintValue, translateDistance, translate } from '../query_utils';
+import properties from './circle_style_layer_properties';
+import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties';
 
 import type {Bucket, BucketParameters} from '../../data/bucket';
 import type Point from '@mapbox/point-geometry';
@@ -52,4 +48,4 @@ class CircleStyleLayer extends StyleLayer {
     }
 }
 
-module.exports = CircleStyleLayer;
+export default CircleStyleLayer;
