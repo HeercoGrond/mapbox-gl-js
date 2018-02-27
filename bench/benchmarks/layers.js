@@ -107,7 +107,7 @@ class LayerHeatmap extends LayerBenchmark {
             sources: {
                 'heatmap': {
                     'type': 'geojson',
-                    'data': require('../data/naturalearth-land.json'),
+                    'data': this.naturalEarthData,
                     'maxzoom': 23
                 }
             },
@@ -135,6 +135,13 @@ class LayerHeatmap extends LayerBenchmark {
                 }
             })
         });
+    }
+
+    setup() {
+        return fetch('/bench/data/naturalearth-land.json')
+            .then(response => response.json())
+            .then(data => { this.naturalEarthData = data; })
+            .then(() => super.setup());
     }
 }
 
@@ -214,7 +221,7 @@ class LayerSymbol extends LayerBenchmark {
 }
 
 
-module.exports = [
+export default [
     LayerBackground,
     LayerCircle,
     LayerFill,
