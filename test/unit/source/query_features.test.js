@@ -1,8 +1,8 @@
 'use strict';
 
-const test = require('mapbox-gl-js-test').test;
-const QueryFeatures = require('../../../src/source/query_features.js');
-const SourceCache = require('../../../src/source/source_cache.js');
+import { test } from 'mapbox-gl-js-test';
+import QueryFeatures from '../../../src/source/query_features.js';
+import SourceCache from '../../../src/source/source_cache.js';
 
 test('QueryFeatures#rendered', (t) => {
     t.test('returns empty object if source returns no tiles', (t) => {
