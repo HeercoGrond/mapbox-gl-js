@@ -2,6 +2,8 @@
 
 const window = require('./window');
 
+const axios =  require('axios');
+
 import type { Callback } from '../types/callback';
 
 /**
@@ -58,63 +60,67 @@ class AJAXError extends Error {
     }
 }
 
-function makeRequest(requestParameters: RequestParameters): XMLHttpRequest {
-    const xhr: XMLHttpRequest = new window.XMLHttpRequest();
+function makeRequest(requestParameters: RequestParameters): AxiosPromise {
+    var headers = {};
 
-    xhr.open('GET', requestParameters.url, true);
     for (const k in requestParameters.headers) {
-        xhr.setRequestHeader(k, requestParameters.headers[k]);
-    }
-    xhr.withCredentials = requestParameters.credentials === 'include';
-    return xhr;
+        headers[k] = requestParameters.headers[k];
+    };
+
+    const axiosRequest: AxiosPromise = new axios.get(requestParameters.url, headers);
+    return axiosRequest;
 }
 
 exports.getJSON = function(requestParameters: RequestParameters, callback: Callback<mixed>) {
-    const xhr = makeRequest(requestParameters);
-    xhr.setRequestHeader('Accept', 'application/json');
-    xhr.onerror = function() {
-        callback(new Error(xhr.statusText));
-    };
-    xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300 && xhr.response) {
+    const axiosRequest = makeRequest(requestParameters);
+
+    axiosRequest.then(response => { 
+        if (response.status >= 200 && response.status < 300 && response.data) {
             let data;
             try {
-                data = JSON.parse(xhr.response);
+                console.log("Got a JSON request response. Data is:" + JSON.stringify(response.data));
+                data = JSON.parse(response.data);
             } catch (err) {
                 return callback(err);
             }
             callback(null, data);
         } else {
-            callback(new AJAXError(xhr.statusText, xhr.status, requestParameters.url));
+            callback(new AJAXError(response.statusText, response.status, requestParameters.url));
         }
-    };
-    xhr.send();
+    }).catch(rejection => { 
+
+        console.log("Rejected: " + JSON.stringify(rejection));
+        callback(new Error(rejection.response.status));
+    })
+
     return xhr;
 };
 
 exports.getArrayBuffer = function(requestParameters: RequestParameters, callback: Callback<{data: ArrayBuffer, cacheControl: ?string, expires: ?string}>) {
-    const xhr = makeRequest(requestParameters);
-    xhr.responseType = 'arraybuffer';
-    xhr.onerror = function() {
-        callback(new Error(xhr.statusText));
-    };
-    xhr.onload = function() {
-        const response: ArrayBuffer = xhr.response;
-        if (response.byteLength === 0 && xhr.status === 200) {
+    const axiosRequest = makeRequest(requestParameters);
+
+    axiosRequest.then(response => {
+        const arrayBuffer: ArrayBuffer = response.data;
+
+        if (arrayBuffer.byteLength === 0 && response.status === 200) {
             return callback(new Error('http status 200 returned without content.'));
         }
-        if (xhr.status >= 200 && xhr.status < 300 && xhr.response) {
+        if (response.status >= 200 && response.status < 300 && response.data) {
+            console.log("Got an array buffer request response. Data is:" + JSON.stringify(arrayBuffer));
+
             callback(null, {
-                data: response,
-                cacheControl: xhr.getResponseHeader('Cache-Control'),
-                expires: xhr.getResponseHeader('Expires')
+                data: response.data
             });
         } else {
-            callback(new AJAXError(xhr.statusText, xhr.status, requestParameters.url));
+            callback(new AJAXError(response.statusText, response.status, requestParameters.url));
         }
-    };
-    xhr.send();
-    return xhr;
+    }).catch(rejection => { 
+
+        console.log("Rejected 2: " + JSON.stringify(rejection));
+        callback(new Error(rejection.response.status));
+    })
+    
+    return axiosRequest;
 };
 
 function sameOrigin(url) {
