@@ -1,4 +1,4 @@
-'use strict';
+
 
 require('./stub_loader');
 require('../build/flow-remove-types.js');

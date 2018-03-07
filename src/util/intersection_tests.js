@@ -4,15 +4,6 @@ import { isCounterClockwise } from './util';
 
 import type Point from '@mapbox/point-geometry';
 
-const exported = {
-    multiPolygonIntersectsBufferedMultiPoint,
-    multiPolygonIntersectsMultiPolygon,
-    multiPolygonIntersectsBufferedMultiLine,
-    polygonIntersectsPolygon,
-    distToSegmentSquared
-};
-
-export default exported;
 export { multiPolygonIntersectsBufferedMultiPoint, multiPolygonIntersectsMultiPolygon, multiPolygonIntersectsBufferedMultiLine, polygonIntersectsPolygon, distToSegmentSquared };
 
 type Line = Array<Point>;

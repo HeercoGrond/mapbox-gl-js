@@ -2,7 +2,7 @@
 
 import Color from './color';
 
-import { number as interpolateNumber } from './interpolate';
+import {number as interpolateNumber} from './interpolate';
 
 type LABColor = {
     l: number,

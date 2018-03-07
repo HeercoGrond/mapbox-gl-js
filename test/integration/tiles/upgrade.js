@@ -1,4 +1,4 @@
-'use strict';
+
 
 const mapnik = require('mapnik');
 const fs = require('fs');
