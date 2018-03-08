@@ -55,7 +55,7 @@ function loadVectorTile(params: WorkerTileParameters, callback: LoadVectorDataCa
         }
     });
     return () => {
-        xhr.abort();
+        //xhr.abort();
         callback();
     };
 }

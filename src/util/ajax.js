@@ -62,7 +62,7 @@ class AJAXError extends Error {
 
 function makeRequest(requestParameters: RequestParameters): AxiosPromise {
     var headers = {};
-
+    console.log("Building axios request");
     for (const k in requestParameters.headers) {
         headers[k] = requestParameters.headers[k];
     };
@@ -106,16 +106,16 @@ exports.getArrayBuffer = function(requestParameters: RequestParameters, callback
             return callback(new Error('http status 200 returned without content.'));
         }
         if (response.status >= 200 && response.status < 300 && response.data) {
-            console.log("Got an array buffer request response. Data is:" + JSON.stringify(arrayBuffer));
-
+            var data = new TextEncoder().encode(response.data);
+            var buffer = data.buffer;
+            
             callback(null, {
-                data: response.data
+                data: buffer
             });
         } else {
             callback(new AJAXError(response.statusText, response.status, requestParameters.url));
         }
     }).catch(rejection => { 
-
         console.log("Rejected 2: " + JSON.stringify(rejection));
         callback(new Error(rejection.response.status));
     })
